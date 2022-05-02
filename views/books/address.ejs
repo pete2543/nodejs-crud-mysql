@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใส่ที่อยู่</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body class="container" style="margin-top: 50px;">
+
+    <% if (messages.error) { %>
+        <div class="alert alert-danger" role="alert"><%= messages.error %></div>
+    <% } %>
+    
+    <br><br>
+
+    <div class="card">
+        <div class="card-header">
+            กรุณาใส่ที่อยู่เพื่อที่จะได้ทำการจัดส่ง:
+        </div>
+        <div class="card-body">
+            <form action="/books/address" method="post">
+                <div class="form-group">
+                    <label>ที่อยู่:</label>
+                    <input type="text" class="form-control" name="House" value="<%= House %>" autocomplete="on"> 
+                </div>
+                <div class="form-group">
+                    <label>ตำบล:</label>
+                    <input type="text" class="form-control" name="district" value="<%=district %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>อำเภอ:</label>
+                    <input type="text" class="form-control" name="amphur" value="<%= amphur %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>จังหวัด:</label>
+                    <input type="text" class="form-control" name="province" value="<%= province %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>รหัสไปรษณีย์ไทย:</label>
+                    <input type="number" class="form-control" name="Post" value="<%=Post %>" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-info" value="Add">
+                </div>
+                <h1 > <img src="https://pbs.twimg.com/profile_images/924662185929752576/9cRHWYxV.jpg" alt=""></h1>
+                       <h1> 089-3274683</h1>
+                <a href="/books/show" class="btn btn-info">กลับสู่หน้าหลัก</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

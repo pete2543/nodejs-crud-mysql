@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books</title>
+    <title>Product Overphone</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -20,9 +20,9 @@
     <div class="card">
         <div class="card-header">
             <ul class="nav nav-pills w-100">
-                <li class="nav-link">Books</li>
+                <li class="nav-link">Overphone</li>
                 <li class="nav-link ml-auto">
-                    <a href="/books/add" class="nav-link active">Add Book</a>
+                    <a href="/books/add" class="nav-link active">Add product</a>
                 </li>
             </ul>
         </div>
@@ -32,27 +32,35 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Author</th>
-                            <th width="200px">Action</th>
+                            <th scope="col">category</th>
+                            <th scope="col">product</th>
+                            <th scope="col">price</th>
+                            <th scope="col">GB</th>
+                            <th scope="col">EDIT</th>
+                            <th scope="col">DELETE</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% for(let i = 0; i < data.length; i++) { %>
                             <tr>
                                 <th scope="row"><%= data[i].id %></th>
-                                <td><%= data[i].name %></td>
-                                <td><%= data[i].author %></td>
+                                <td><%= data[i].category %></td>
+                                <td><%= data[i].product %></td>
+                                <td><%= data[i].price %></td>
+                                <td><%= data[i].GB %></td>
                                 <td>
-                                    <a href="../books/edit/<%= data[i].id %>" class="btn btn-success edit">Edit</a>
-                                    <a href="../books/delete/<%= data[i].id %>" onclick="return alert('Are you sure?')" class="btn btn-danger delete">Delete</a>
+                                    <a href="../books/edit/<%=data[i].id %>" class="btn btn-success edit">Edit</a>
+                                   
+                                </td>
+                                <td>
+                                    <a href="../books/delete/<%= data[i].id %>" onclick="alert('Are you sure?')" class="btn btn-danger delete">Delete</a>
                                 </td>
                             </tr>
                         <% } %>
                     </tbody>
                 </table>
+                <a href="../books/show/" class="btn btn-success edit">Show</a>
             <% } %>
-
             <!-- if result is empty -->
             <% if(!data.length) { %>
                 <p class="text-center">No book found!</p>
