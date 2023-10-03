@@ -54,22 +54,25 @@ router.get("/bay(:id)", (req, res, next) => {
         product: rows[0].product,
         price: rows[0].price,
         GB: rows[0].GB,
+        image:rows[0].image,
       });
     }
   });
 });
 
 //show Detail
-router.get("/detail",(req,res,next)=>{
+router.get("/detail", (req, res, next) => {
+  // Query database and retrieve data
   dbCon.query("SELECT * FROM product_over ORDER BY id asc", (err, rows) => {
     if (err) {
       req.flash("error", err);
-      res.render("books/detail", { data: "" });
+      res.render("books/detail", { data: "" }); // ตรงนี้ให้แน่ใจว่า data ถูกส่งมาถูกต้อง
     } else {
-      res.render("books/detail", { data: rows });
+      res.render("books/detail", { data: rows }); // ตรงนี้ให้แน่ใจว่า data ถูกส่งมาถูกต้อง
     }
   });
-})
+});
+
 
 // display add product page
 router.get("/add", (req, res, next) => {
@@ -82,59 +85,74 @@ router.get("/add", (req, res, next) => {
   });
 });
 
-// add a new book
-router.post("/add", (req, res, next) => {
-    let category = req.body.category;
-    let product = req.body.product;
-    let price = req.body.price;
-    //let productcolor = req.body.productcolor;
-    let GB = req.body.GB;
-    let errors = false;
+// ในส่วนของการอัปโหลดรูปภาพ
+const multer = require('multer');
+const path = require('path'); // เพิ่มบรรทัดนี้เพื่อนำเข้าโมดูล path
 
-  if (category.length === 0 ||
-    product.length === 0 ||
-    price.length === 0 ||
-    GB.length === 0) {
-    errors = true;
-    // set flash message
-    req.flash("error", "Please enter name and author");
-    // render to add.ejs with flash message
-    res.render("books/add", {
-        category: category,
-        product: product,
-        price: price,
-        GB: GB,
-    });
-  }
-
-  // if no error
-  if (!errors) {
-    let form_data = {
-        category: category,
-        product: product,
-        price: price,
-        GB: GB
-    };
-
-    // insert query
-    dbCon.query("INSERT INTO product_over SET ?", form_data, (err, result) => {
-      if (err) {
-        req.flash("error", err);
-
-        res.render("books/add", {
-            category: form_data.category,
-            product: form_data.product,
-            price: form_data.price,
-            product_color: form_data.product_color,
-            GB: form_data.GB,
-        });
-      } else {
-        req.flash("success", "Book successfully added");
-        res.redirect("/books");
-      }
-    });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') // กำหนดโฟลเดอร์ที่จะเก็บไฟล์รูปภาพ
+  },
+  filename: function (req, file, cb) {
+    // กำหนดชื่อไฟล์รูปภาพ ในกรณีนี้ใช้ชื่อเดียวกับเวลาปัจจุบัน + นามสกุลไฟล์
+    cb(null, Date.now() + path.extname(file.originalname))
   }
 });
+
+
+const upload = multer({ storage: storage });
+
+
+// ในส่วนของ POST /add
+router.post("/add", upload.single('image'), (req, res, next) => {
+  let category = req.body.category;
+  let product = req.body.product;
+  let price = req.body.price;
+  let GB = req.body.GB;
+  let imageFilePath = req.file.path; // เส้นทางไฟล์รูปภาพ
+
+  let errors = false;
+
+  if (!category || !product || !price || !GB || !imageFilePath) {
+      errors = true;
+      req.flash("error", "Please fill in all fields including an image");
+      res.render("books/add", {
+          category: category,
+          product: product,
+          price: price,
+          GB: GB,
+      });
+  }
+
+  // หากไม่มีข้อผิดพลาด
+  if (!errors) {
+      let form_data = {
+          category: category,
+          product: product,
+          price: price,
+          GB: GB,
+          image: imageFilePath // บันทึกเส้นทางไฟล์รูปภาพในฐานข้อมูล
+      };
+
+      // เพิ่มข้อมูลลงในฐานข้อมูล
+      dbCon.query("INSERT INTO product_over SET ?", form_data, (err, result) => {
+          if (err) {
+              req.flash("error", err);
+              res.render("books/add", {
+                  category: form_data.category,
+                  product: form_data.product,
+                  price: form_data.price,
+                  GB: form_data.GB,
+              });
+          } else {
+              req.flash("success", "Book successfully added");
+              res.redirect("/books");
+          }
+      });
+  }
+});
+
+
 
 
 //ADD PAY
@@ -289,6 +307,23 @@ router.post("/address", (req, res, next) => {
     });
   }
 });
+
+
+router.get("/detail/:id", (req, res, next) => {
+  let id = req.params.id;
+  dbCon.query("SELECT * FROM product_over WHERE id = " + id, (err, rows, fields) => {
+    if (rows.length <= 0) {
+      req.flash("error", "product_over not found with id = " + id);
+      res.redirect("/books");
+    } else {
+      res.render("books/detail", {
+        title: "show book",
+        data: rows[0], // ส่งข้อมูลของสินค้าเดียวไปยังหน้า detail
+      });
+    }
+  });
+});
+
 
 router.post("/addpay", (req, res, next) => {
   let pay = req.body.pay;

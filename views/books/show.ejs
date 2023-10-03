@@ -121,19 +121,22 @@
                         <% if(data.length) { %>
                             <% for(let i = 0; i < data.length; i++) { %>
                                 <div class="card" style="width: 19rem">
-                                    <img src="https://diyboo.oss-accelerate.aliyuncs.com/wp-content/uploads/2021/05/S2d8b3f79-a46a-4dc0-87ce-aa8b348d8c2b-e1622439801509.jpg" class="card-img-top" alt="...">
+                                    <!-- ในหน้าที่ต้องการแสดงรูปภาพ -->
+                                    <img src="/<%= data[i].image %>" alt="Image">
                                     <div class="card-body">
                                       <h5 class="card-title"><%= data[i].product %></h5>
-                                      <small class="card-text ">ประเภท:      <%= data[i].category %></small><br>
-                                      <p class="card-text ">ราคา:  <%= data[i].price %>  บาท</p>
+                                      <small class="card-text ">ประเภท: <%= data[i].category %></small><br>
+                                      <p class="card-text ">ราคา: <%= data[i].price %>  บาท</p>
                                       <span class="badge bg-warning text-dark">ขนาดความจุ <%= data[i].GB %></span><br>
-                                      <a href="/books/detail" class="btn btn-primary">Buy</a>
+                                      <a href="/books/detail/<%= data[i].id %>" class="btn btn-primary">Buy</a>
                                     </div>
-                                  </div>
-                                  <P></P>
+                                </div>
+                                <P></P>
                            <% } %>
                         <% } %>
                     </div>
+                </div>
+                
                 </div>
 
                 <div class="col-12 text-center">
